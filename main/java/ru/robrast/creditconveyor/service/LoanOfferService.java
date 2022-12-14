@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 public class LoanOfferService {
-
+    private static final BigDecimal salaryClientDiscount = BigDecimal.valueOf(1);
+    private static final BigDecimal insuranceEnableDiscount = BigDecimal.valueOf(1.5);
 
 
     public static List<LoanOfferDTO> generateLoanOffer(LoanApplicationRequestDTO request){
@@ -24,13 +25,13 @@ public class LoanOfferService {
     }
     private static LoanOfferDTO CompletionLoanOffer(boolean isInsuranceEnabled, boolean isSalaryClient, BigDecimal amount, Integer term){
         LoanOfferDTO loanOffer = new LoanOfferDTO();
-        BigDecimal loan_rate = new BigDecimal("13.5");
+        BigDecimal loan_rate = BigDecimal.valueOf(13.5);
         if (isSalaryClient)
-            loan_rate = loan_rate.subtract(new BigDecimal(1));
-        else loan_rate = loan_rate.add(new BigDecimal(1));
+            loan_rate = loan_rate.subtract(insuranceEnableDiscount);
+        else loan_rate = loan_rate.add(insuranceEnableDiscount);
         if (isInsuranceEnabled)
-            loan_rate = loan_rate.subtract(BigDecimal.valueOf(1.5));
-        else loan_rate = loan_rate.add(BigDecimal.valueOf(1.5));
+            loan_rate = loan_rate.subtract(salaryClientDiscount);
+        else loan_rate = loan_rate.add(salaryClientDiscount);
         loanOffer.setRequestedAmount(amount);
         loanOffer.setTerm(term);
         loanOffer.setIsInsuranceEnabled(isInsuranceEnabled);
