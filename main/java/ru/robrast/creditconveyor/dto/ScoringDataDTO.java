@@ -28,7 +28,7 @@ public class ScoringDataDTO {
     public enum Gender {
         MALE,
         FEMALE,
-        NOT_BINARY
+        NONBINARY
     }
     public enum MaritalStatus {
         MARRIED,

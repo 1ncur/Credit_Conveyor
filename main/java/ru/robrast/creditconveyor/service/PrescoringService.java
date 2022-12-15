@@ -7,6 +7,8 @@ import ru.robrast.creditconveyor.dto.LoanApplicationRequestDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.regex.Pattern;
+
 @SuppressWarnings("unused")
 @Service
 public class PrescoringService {
@@ -16,8 +18,8 @@ public class PrescoringService {
         verifyFullName(request.getMiddleName().length());
         verifyTerm(request.getTerm());
         verifyAmount(request.getAmount());
-        verifyPassportSeries(request.getPassportSeries().length());
-        verifyPassportNumber(request.getPassportNumber().length());
+        verifyPassportSeries(request.getPassportSeries());
+        verifyPassportNumber(request.getPassportNumber());
         verifyEmail(request.getEmail());
         verifyBirthdate(request.getBirthdate());
 
@@ -35,12 +37,12 @@ public class PrescoringService {
         if (value.compareTo(new BigDecimal(10000)) > 0)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Минимальная сумма 10000!", null);
     }
-    private void verifyPassportSeries(Integer value) {
-        if (value != 4)
+    private void verifyPassportSeries(String value) {
+        if (Pattern.matches("\\d{4}", value))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите корректную серию паспорта(Первые 4 цифры)!", null);
     }
-    private void verifyPassportNumber(Integer value) {
-        if (value != 6)
+    private void verifyPassportNumber(String value) {
+        if (Pattern.matches("\\d{6}", value))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите корректный номер паспорта(Последние 6 цифр)!", null);
     }
 
