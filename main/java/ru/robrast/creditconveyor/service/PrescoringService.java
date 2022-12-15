@@ -34,15 +34,15 @@ public class PrescoringService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Минимальный срок - 6 месяцев!", null);
     }
     private void verifyAmount(BigDecimal value) {
-        if (value.compareTo(new BigDecimal(10000)) > 0)
+        if (value.compareTo(new BigDecimal(10000)) < 0)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Минимальная сумма 10000!", null);
     }
     private void verifyPassportSeries(String value) {
-        if (Pattern.matches("\\d{4}", value))
+        if (!Pattern.matches("\\d{4}", value))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите корректную серию паспорта(Первые 4 цифры)!", null);
     }
     private void verifyPassportNumber(String value) {
-        if (Pattern.matches("\\d{6}", value))
+        if (!Pattern.matches("\\d{6}", value))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите корректный номер паспорта(Последние 6 цифр)!", null);
     }
 

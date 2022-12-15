@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 public class LoanOfferService {
-    private static final BigDecimal salaryClientDiscount = BigDecimal.valueOf(1);
-    private static final BigDecimal insuranceEnableDiscount = BigDecimal.valueOf(1.5);
+    private final BigDecimal salaryClientDiscount = BigDecimal.valueOf(1);
+    private final BigDecimal insuranceEnableDiscount = BigDecimal.valueOf(1.5);
 
 
-    public static List<LoanOfferDTO> generateLoanOffer(LoanApplicationRequestDTO request){
+    public List<LoanOfferDTO> generateLoanOffer(LoanApplicationRequestDTO request){
         List<LoanOfferDTO> offers = new ArrayList<>();
         offers.add(CompletionLoanOffer(false , false, request.getAmount(), request.getTerm()));
         offers.add(CompletionLoanOffer(false , true, request.getAmount(), request.getTerm()));
@@ -23,7 +23,7 @@ public class LoanOfferService {
         offers.add(CompletionLoanOffer(true , true, request.getAmount(), request.getTerm()));
         return offers;
     }
-    private static LoanOfferDTO CompletionLoanOffer(boolean isInsuranceEnabled, boolean isSalaryClient, BigDecimal amount, Integer term){
+    private LoanOfferDTO CompletionLoanOffer(boolean isInsuranceEnabled, boolean isSalaryClient, BigDecimal amount, Integer term){
         LoanOfferDTO loanOffer = new LoanOfferDTO();
         BigDecimal loan_rate = BigDecimal.valueOf(13.5);
         if (isSalaryClient)
