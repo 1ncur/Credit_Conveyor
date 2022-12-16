@@ -25,7 +25,7 @@ public class LoanOfferService {
     }
     private LoanOfferDTO CompletionLoanOffer(boolean isInsuranceEnabled, boolean isSalaryClient, BigDecimal amount, Integer term){
         LoanOfferDTO loanOffer = new LoanOfferDTO();
-        BigDecimal loan_rate = BigDecimal.valueOf(13.5);
+        BigDecimal loan_rate = BigDecimal.valueOf(12.5);
         if (isSalaryClient) loan_rate = loan_rate.subtract(insuranceEnableDiscount);
         else loan_rate = loan_rate.add(insuranceEnableDiscount);
         if (isInsuranceEnabled) loan_rate = loan_rate.subtract(salaryClientDiscount);
@@ -35,9 +35,9 @@ public class LoanOfferService {
         loanOffer.setIsInsuranceEnabled(isInsuranceEnabled);
         loanOffer.setIsSalaryClient(isSalaryClient);
         loanOffer.setRate(loan_rate);
-        BigDecimal monthlyPercents = loan_rate.divide(new BigDecimal(1200), 6, RoundingMode.HALF_UP);
+        BigDecimal monthlyPercents = loan_rate.divide(new BigDecimal(1200), 6, RoundingMode.UP);
         BigDecimal temporarycoeff = monthlyPercents.add(new BigDecimal(1)).pow(term);
-        BigDecimal coeff = (monthlyPercents.multiply(temporarycoeff)).divide(temporarycoeff.subtract(new BigDecimal(1)), 6, RoundingMode.HALF_UP);
+        BigDecimal coeff = (monthlyPercents.multiply(temporarycoeff)).divide(temporarycoeff.subtract(new BigDecimal(1)), 10, RoundingMode.CEILING);
         BigDecimal monthlyPayment = amount.multiply(coeff);
         BigDecimal totalAmount = monthlyPayment.multiply(BigDecimal.valueOf(term));
         loanOffer.setTotalAmount(totalAmount);
