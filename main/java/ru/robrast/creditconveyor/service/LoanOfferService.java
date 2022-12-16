@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 public class LoanOfferService {
-    private final BigDecimal salaryClientDiscount = BigDecimal.valueOf(1);
-    private final BigDecimal insuranceEnableDiscount = BigDecimal.valueOf(1.5);
+    private final BigDecimal salaryClientDiscount = BigDecimal.valueOf(0.01);
+    private final BigDecimal insuranceEnableDiscount = BigDecimal.valueOf(0.015);
 
 
     public List<LoanOfferDTO> generateLoanOffer(LoanApplicationRequestDTO request){
@@ -25,7 +25,7 @@ public class LoanOfferService {
     }
     private LoanOfferDTO CompletionLoanOffer(boolean isInsuranceEnabled, boolean isSalaryClient, BigDecimal amount, Integer term){
         LoanOfferDTO loanOffer = new LoanOfferDTO();
-        BigDecimal loan_rate = BigDecimal.valueOf(13.5);
+        BigDecimal loan_rate = BigDecimal.valueOf(0.125);
         if (isSalaryClient)
             loan_rate = loan_rate.subtract(insuranceEnableDiscount);
         else loan_rate = loan_rate.add(insuranceEnableDiscount);
@@ -36,9 +36,14 @@ public class LoanOfferService {
         loanOffer.setTerm(term);
         loanOffer.setIsInsuranceEnabled(isInsuranceEnabled);
         loanOffer.setIsSalaryClient(isSalaryClient);
-        loanOffer.setRate(loan_rate);
-        loanOffer.setTotalAmount(loanOffer.getRequestedAmount().multiply(loan_rate));
-        loanOffer.setMonthlyPayment(loanOffer.getTotalAmount().divide(BigDecimal.valueOf(term), RoundingMode.UP));
+        loanOffer.setRate(loan_rate.multiply(new BigDecimal(100)));
+        BigDecimal monthlyPercents = loan_rate.divide(new BigDecimal(12), 6, RoundingMode.HALF_UP);
+        BigDecimal temporarycoeff = monthlyPercents.add(new BigDecimal(1)).pow(term);
+        BigDecimal coeff = (monthlyPercents.multiply(temporarycoeff)).divide(temporarycoeff.subtract(new BigDecimal(1)), 6, RoundingMode.HALF_UP);
+        BigDecimal monthlyPayment = amount.multiply(coeff);
+        BigDecimal totalAmount = monthlyPayment.multiply(BigDecimal.valueOf(term));
+        loanOffer.setTotalAmount(totalAmount);
+        loanOffer.setMonthlyPayment(monthlyPayment);
         return loanOffer;
     }
 
