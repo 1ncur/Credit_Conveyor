@@ -40,8 +40,8 @@ public class LoanOfferService {
         BigDecimal coeff = (monthlyPercents.multiply(temporarycoeff)).divide(temporarycoeff.subtract(new BigDecimal(1)), 10, RoundingMode.CEILING);
         BigDecimal monthlyPayment = amount.multiply(coeff);
         BigDecimal totalAmount = monthlyPayment.multiply(BigDecimal.valueOf(term));
-        loanOffer.setTotalAmount(totalAmount);
-        loanOffer.setMonthlyPayment(monthlyPayment);
+        loanOffer.setTotalAmount(totalAmount.setScale(2, RoundingMode.UP));
+        loanOffer.setMonthlyPayment(monthlyPayment.setScale(2, RoundingMode.UP));
         return loanOffer;
     }
 
