@@ -11,33 +11,31 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 public class LoanOfferService {
-    private final BigDecimal salaryClientDiscount = BigDecimal.valueOf(0.01);
-    private final BigDecimal insuranceEnableDiscount = BigDecimal.valueOf(0.015);
+    private final BigDecimal salaryClientDiscount = BigDecimal.valueOf(1.0);
+    private final BigDecimal insuranceEnableDiscount = BigDecimal.valueOf(1.5);
 
 
     public List<LoanOfferDTO> generateLoanOffer(LoanApplicationRequestDTO request){
         List<LoanOfferDTO> offers = new ArrayList<>();
-        offers.add(CompletionLoanOffer(false , false, request.getAmount(), request.getTerm()));
-        offers.add(CompletionLoanOffer(false , true, request.getAmount(), request.getTerm()));
-        offers.add(CompletionLoanOffer(true , false, request.getAmount(), request.getTerm()));
-        offers.add(CompletionLoanOffer(true , true, request.getAmount(), request.getTerm()));
+        offers.add(CompletionLoanOffer(false, false, request.getAmount(), request.getTerm()));
+        offers.add(CompletionLoanOffer(false, true, request.getAmount(), request.getTerm()));
+        offers.add(CompletionLoanOffer(true, false, request.getAmount(), request.getTerm()));
+        offers.add(CompletionLoanOffer(true, true, request.getAmount(), request.getTerm()));
         return offers;
     }
     private LoanOfferDTO CompletionLoanOffer(boolean isInsuranceEnabled, boolean isSalaryClient, BigDecimal amount, Integer term){
         LoanOfferDTO loanOffer = new LoanOfferDTO();
-        BigDecimal loan_rate = BigDecimal.valueOf(0.125);
-        if (isSalaryClient)
-            loan_rate = loan_rate.subtract(insuranceEnableDiscount);
+        BigDecimal loan_rate = BigDecimal.valueOf(13.5);
+        if (isSalaryClient) loan_rate = loan_rate.subtract(insuranceEnableDiscount);
         else loan_rate = loan_rate.add(insuranceEnableDiscount);
-        if (isInsuranceEnabled)
-            loan_rate = loan_rate.subtract(salaryClientDiscount);
-        else loan_rate = loan_rate.add(salaryClientDiscount);
+        if (isInsuranceEnabled) loan_rate = loan_rate.subtract(salaryClientDiscount);
+        else  loan_rate = loan_rate.add(salaryClientDiscount);
         loanOffer.setRequestedAmount(amount);
         loanOffer.setTerm(term);
         loanOffer.setIsInsuranceEnabled(isInsuranceEnabled);
         loanOffer.setIsSalaryClient(isSalaryClient);
-        loanOffer.setRate(loan_rate.multiply(new BigDecimal(100)));
-        BigDecimal monthlyPercents = loan_rate.divide(new BigDecimal(12), 6, RoundingMode.HALF_UP);
+        loanOffer.setRate(loan_rate);
+        BigDecimal monthlyPercents = loan_rate.divide(new BigDecimal(1200), 6, RoundingMode.HALF_UP);
         BigDecimal temporarycoeff = monthlyPercents.add(new BigDecimal(1)).pow(term);
         BigDecimal coeff = (monthlyPercents.multiply(temporarycoeff)).divide(temporarycoeff.subtract(new BigDecimal(1)), 6, RoundingMode.HALF_UP);
         BigDecimal monthlyPayment = amount.multiply(coeff);
