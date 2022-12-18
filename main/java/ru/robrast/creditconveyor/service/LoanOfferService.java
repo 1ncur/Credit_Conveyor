@@ -44,8 +44,4 @@ public class LoanOfferService {
         loanOffer.setMonthlyPayment(monthlyPayment.setScale(2, RoundingMode.UP));
         return loanOffer;
     }
-
-
-
-
 }
