@@ -37,7 +37,7 @@ public class CalculationCredit {
                 loan_rate = loan_rate.subtract(BigDecimal.valueOf(4));
 
             if (amount.compareTo(request.getEmployment().getSalary().multiply(BigDecimal.valueOf(20))) > 0) {
-                log.debug("искл");
+                log.debug("Сумма займа больше, чем 20 зарплат ");
                 throw new RejectionException("Вам отказано в кредите");
             }
 
@@ -50,10 +50,14 @@ public class CalculationCredit {
                 loan_rate = loan_rate.add(BigDecimal.valueOf(1));
 
             LocalDate now = LocalDate.now();
-            if (request.getBirthdate().until(now).getYears() < 20)
+            if (request.getBirthdate().until(now).getYears() < 20){
+                log.debug("Возраст менее 20 лет");
                 throw new RejectionException("Вам отказано в кредите");
-            if (request.getBirthdate().until(now).getYears() >= 60)
+            }
+            if (request.getBirthdate().until(now).getYears() >= 60) {
+                log.debug("Возраст более 60 лет");
                 throw new RejectionException("Вам отказано в кредите");
+            }
 
 
             if (request.getGender().equals(ScoringDataDTO.Gender.FEMALE) && (request.getBirthdate().until(now).getYears() <= 60) && (request.getBirthdate().until(now).getYears() >= 35))
@@ -63,10 +67,14 @@ public class CalculationCredit {
             else if (request.getGender().equals(ScoringDataDTO.Gender.NONBINARY))
                 loan_rate = loan_rate.add(BigDecimal.valueOf(3));
 
-            if (request.getEmployment().getWorkExperienceCurrent() < 3)
+            if (request.getEmployment().getWorkExperienceCurrent() < 3) {
+                log.debug("Стаж работы на текущем месте меньше 3 месяцев");
                 throw new RejectionException("Вам отказано в кредите");
-            if (request.getEmployment().getWorkExperienceTotal() < 12)
+            }
+            if (request.getEmployment().getWorkExperienceTotal() < 12){
+                log.debug("Общий стаж работы меньше 12 месяцев");
                 throw new RejectionException("Вам отказано в кредите");
+            }
 
             BigDecimal monthlyPercents = loan_rate.divide(new BigDecimal(1200), 6, RoundingMode.UP);
             BigDecimal temporarycoeff = monthlyPercents.add(new BigDecimal(1)).pow(request.getTerm());
