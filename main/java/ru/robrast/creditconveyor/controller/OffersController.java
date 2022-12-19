@@ -24,6 +24,7 @@ public class OffersController   {
     private final PrescoringService prescoringService;
     private final CalculationCredit calculationCredit;
 
+
     @Autowired
     public OffersController(LoanOfferService loanOfferService, PrescoringService prescoringService, CalculationCredit calculationCredit){
         this.loanOfferService = loanOfferService;
@@ -31,15 +32,14 @@ public class OffersController   {
         this.calculationCredit = calculationCredit;
     }
     @PostMapping("/conveyor/calculation")
-    public List<CreditDTO> generateCreditDataDTO(@RequestBody ScoringDataDTO request){
+    public CreditDTO generateCreditDataDTO(@RequestBody ScoringDataDTO request){
+
         return calculationCredit.generateCreditDataDTO(request);
     }
     @PostMapping("/conveyor/offers")
     public List<LoanOfferDTO> generateOffers(@RequestBody LoanApplicationRequestDTO request) {
+        prescoringService.verifyData(request);
         return loanOfferService.generateLoanOffer(request);
     }
- /*   public void Warn(@RequestBody LoanApplicationRequestDTO request){
-        prescoringService.verifyData(request);
-    }
-  */
+
 }

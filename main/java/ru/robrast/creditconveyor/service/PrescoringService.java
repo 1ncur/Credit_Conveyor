@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.robrast.creditconveyor.dto.LoanApplicationRequestDTO;
+import ru.robrast.creditconveyor.exception.RejectionException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,35 +32,32 @@ public class PrescoringService {
     }
     private void verifyTerm(Integer value) {
         if (value < 6)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Минимальный срок - 6 месяцев!", null);
+            throw new RejectionException("Минимальный срок - 6 месяцев!");
     }
     private void verifyAmount(BigDecimal value) {
         if (value.compareTo(new BigDecimal(10000)) < 0)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Минимальная сумма 10000!", null);
+            throw new RejectionException("Минимальная сумма 10000!");
     }
     private void verifyPassportSeries(String value) {
         if (!Pattern.matches("\\d{4}", value))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите корректную серию паспорта(Первые 4 цифры)!", null);
+            throw new RejectionException("Введите корректную серию паспорта(Первые 4 цифры)!");
     }
     private void verifyPassportNumber(String value) {
         if (!Pattern.matches("\\d{6}", value))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите корректный номер паспорта(Последние 6 цифр)!", null);
+            throw new RejectionException("Введите корректный номер паспорта(Последние 6 цифр)!");
     }
 
 
     private void verifyBirthdate(LocalDate value) {
         LocalDate now = LocalDate.now();
         if (value.until(now).getYears() < 18)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Кредиты выдаются с 18 лет!", null);
+            throw new RejectionException("Кредиты выдаются с 18 лет!");
         if (value.until(now).getYears() >= 70)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Кредиты выдаются до 70 лет!", null);
-
-
-
+            throw new RejectionException("Кредиты выдаются до 70 лет!");
     }
    private void verifyEmail(String value) {
         if (!value.matches("^\\w{2,50}@\\w{2,30}.\\w{2,20}$"))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите корректную почту!", null);
+            throw new RejectionException("Введите корректную почту!");
     }
 
 }
